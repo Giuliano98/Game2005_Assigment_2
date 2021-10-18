@@ -25,10 +25,14 @@ public:
 
 private:
 
-	float dt_y, dt_x = 0.016;
+	float dt_y = 0.016f;
+	float dt_x = 0.016f;
+
+	float time_y = 0.0f;
+	float time_x = 0.0f;
 	// particle's variables
 	const float DEG_TO_RADIANS = (double)M_PI / (double)180.0;
-	float time_y, time_x = 0.0f;
+	
 	float v = 95.0f;
 	float d = 485.0f;
 	float g = 9.8f;

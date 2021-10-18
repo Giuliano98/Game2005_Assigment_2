@@ -37,7 +37,7 @@ void Particle::update()
 		// finding final position after "t" seconds
 		//xf = xi + Vx * t;
 		//yf = yi + Vy * t + (0.5f * g * pow(t, 2));
-		
+
 		yAxisUpdate();
 
 		xf = getTransform()->position.x;
@@ -52,8 +52,8 @@ void Particle::update()
 		// updating new position
 		//this->getTransform()->position = glm::vec2(xf, yf);
 
-		/*std::cout << ", " << t << "/  h:" << yf << "/ y:" << this->getTransform()->position.y << std::endl;
-		std::cout <<"-------------------------------" << std::endl;*/
+		std::cout << dt_y << ", " << time_y << "/  h:" << yf << "/ y:" << this->getTransform()->position.y << std::endl;
+		std::cout <<"-------------------------------" << std::endl;
 	}
 }
 
