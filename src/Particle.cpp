@@ -48,7 +48,6 @@ void Particle::update()
 			// move in air
 			moveInAir();
 		}
-
 		
 		// make a new pos coordinates
 		x = xf + xi;

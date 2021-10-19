@@ -34,15 +34,17 @@ private:
 	
 	glm::vec2 m_mousePosition;
 	
-
 	//const float DEG_TO_RADIANS = (double)M_PI / (double)180.0;
 	const float RADIANS_TO_DEG = (double)180.0 / (double)M_PI;
 	const float DEG_TO_RADIANS = (double)M_PI / (double)180.0;
 
 	Particle* m_pParticle;
 
+	
 	glm::vec2 m_rampPos = {50.0f, 200.0f};
 
+
+	float m_rampDis = 500.0f;
 	float m_rampRise = 3.0f;
 	float m_rampRun = 4.0f;
 	float m_rampAng = atan(m_rampRise/m_rampRun) * RADIANS_TO_DEG;
@@ -55,7 +57,7 @@ private:
 		m_rampPos.y + m_rampRise*P30_M1};	  // Final pos in y
 
 	glm::vec4 m_myFloor = { m_rampPos.x, m_myRamp.w, 
-		800.0f - m_rampPos.x,
+		m_rampPos.x + m_rampDis,
 		m_rampPos.y + m_rampRise*P30_M1
 	};
 	

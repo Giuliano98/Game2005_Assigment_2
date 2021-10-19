@@ -64,10 +64,10 @@ void PlayScene::update()
 		m_rampPos.y + m_rampRise*P30_M1};	  // Final pos in y
 
 	m_myFloor = { m_rampPos.x, m_myRamp.w, 
-		800.0f - m_rampPos.x,
-		m_rampPos.y + m_rampRise*P30_M1
-	};
+		m_rampPos.x + m_rampDis,
+		m_rampPos.y + m_rampRise*P30_M1};
 
+	// to show how the particle move with Imgui
 	if (!m_pParticle->getStart())
 	{
 		m_pParticle->getTransform()->position = glm::vec2(m_rampPos.x, m_rampPos.y - 70);
@@ -143,7 +143,7 @@ void PlayScene::start()
 	ImGuiWindowFrame::Instance().setGUIFunction(std::bind(&PlayScene::GUI_Function, this));
 }
 
-bool PlayScene::isGround()
+bool PlayScene::isGround() 
 {
 	return CollisionManager::lineRectCheck(
 		{m_myFloor.x,m_myFloor.y}, {m_myFloor.z, m_myFloor.w}, 
@@ -169,8 +169,17 @@ void PlayScene::GUI_Function()
 	
 	ImGui::Begin("Assignment 1", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoMove);
 
-	ImGui::SliderFloat("m_rampPos X", &m_rampPos.x, 0.0f, 800.0f, "%.1f,");
-	ImGui::SliderFloat("m_rampPos Y", &m_rampPos.y, 0.0f, 600.0f, "%.1f,");
+	ImGui::SliderFloat("Inicial Pos X", &m_rampPos.x, 0.0f, 800.0f, "%.1f,");
+	ImGui::SliderFloat("Inicial Pos Y", &m_rampPos.y, 0.0f, 600.0f, "%.1f,");
+
+	ImGui::Separator();
+	ImGui::SliderFloat("Ramp Rise", &m_rampRise, 0.0f, 20.0f, "%.1f,");
+	ImGui::SliderFloat("Ramp Run", &m_rampRun, 0.0f, 15.0f, "%.1f,");
+	ImGui::SliderFloat("Ramp Distance", &m_rampDis, 100.0f, 800.0f, "%.1f,");
+
+	ImGui::Separator();
+	ImGui::SliderFloat("Gravity", &Gravity, 1.0f, 15.0f, "%.1f,");
+	ImGui::SliderFloat("Floor Friction", &uFric_Floor, 0.0f, 1.0f, "%.1f,");
 
 	/*
 	ImGui::SliderFloat("IniPos X", &m_pParticle->getTransform()->position.x, 0.0f, 800.0f, "%.1f,");
