@@ -11,7 +11,7 @@
 PlayScene::PlayScene()
 {
 	PlayScene::start();
-	TextureManager::Instance().load("../Assets/textures/A1_background.png", "bg");
+	TextureManager::Instance().load("../Assets/textures/city_bg.png", "bg");
 
 	auto size = TextureManager::Instance().getTextureSize("bg");
 	setWidth(size.x);
@@ -24,16 +24,16 @@ PlayScene::~PlayScene()
 void PlayScene::draw()
 {
 	TextureManager::Instance().draw("bg",
-		getTransform()->position.x, getTransform()->position.y, 0, 0, false);
+		getTransform()->position.x, getTransform()->position.y, 0, 255, false);
 	drawDisplayList();
 	
 
-	SDL_SetRenderDrawColor(Renderer::Instance().getRenderer(), 255, 0, 0, 255);
+	SDL_SetRenderDrawColor(Renderer::Instance().getRenderer(), 0, 0, 255, 255);
 	SDL_RenderDrawLine(Renderer::Instance().getRenderer(),
 		m_myRamp.x, m_myRamp.y, 
 		m_myRamp.z, m_myRamp.w);
 
-	SDL_SetRenderDrawColor(Renderer::Instance().getRenderer(), 255, 0, 0, 255);
+	SDL_SetRenderDrawColor(Renderer::Instance().getRenderer(), 0, 0, 255, 255);
 	SDL_RenderDrawLine(Renderer::Instance().getRenderer(),
 		m_myFloor.x, m_myFloor.y, 
 		m_myFloor.z, m_myFloor.w);
@@ -129,15 +129,15 @@ void PlayScene::start()
 
 	/* Labels */
 	m_pStart = new Label("Press (S) to start the motion", "Consolas", 20
-		, SDL_Color({ 255, 0, 0, 255 }), glm::vec2(476.0f, 30.0f));
+		, SDL_Color({ 0, 255, 0, 255 }), glm::vec2(496.0f, 30.0f));
 	addChild(m_pStart);
 
 	m_pRestart = new Label("Press (R) to Restart the level motion", "Consolas", 20
-		, SDL_Color({ 255, 0, 0, 255 }), glm::vec2(520.0f, 60.0f));
+		, SDL_Color({ 0, 255, 0, 255 }), glm::vec2(540.0f, 60.0f));
 	addChild(m_pRestart);
 	
 	m_pInstructionsLabel = new Label("Press (`) to toggle Debug View", "Consolas", 20
-		, SDL_Color({ 255, 0, 0, 255 }), glm::vec2(483.0f, 90.0f));
+		, SDL_Color({ 0, 255, 0, 255 }), glm::vec2(503.0f, 90.0f));
 	addChild(m_pInstructionsLabel);
 
 	ImGuiWindowFrame::Instance().setGUIFunction(std::bind(&PlayScene::GUI_Function, this));

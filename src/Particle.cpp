@@ -5,7 +5,7 @@
 
 Particle::Particle()
 {
-	TextureManager::Instance().load("../Assets/textures/A1_Cactus.png", "particle");
+	TextureManager::Instance().load("../Assets/textures/OW_LootBox.png", "particle");
 
 	auto size = TextureManager::Instance().getTextureSize("particle");
 	setWidth(size.x);
