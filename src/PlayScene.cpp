@@ -26,13 +26,18 @@ void PlayScene::draw()
 	TextureManager::Instance().draw("bg",
 		getTransform()->position.x, getTransform()->position.y, 0, 0, false);
 	drawDisplayList();
-
-	/*SDL_SetRenderDrawColor(Renderer::Instance().getRenderer(), 255, 0, 0, 255);
-	SDL_RenderDrawLine(Renderer::Instance().getRenderer(), xi, yi, xi + d, yi);*/
+	
 
 	SDL_SetRenderDrawColor(Renderer::Instance().getRenderer(), 255, 0, 0, 255);
-	SDL_RenderDrawLine(Renderer::Instance().getRenderer(),100, 400, 600, 400);
-	
+	SDL_RenderDrawLine(Renderer::Instance().getRenderer(),
+		m_myRamp.x, m_myRamp.y, 
+		m_myRamp.z, m_myRamp.w);
+
+	SDL_SetRenderDrawColor(Renderer::Instance().getRenderer(), 255, 0, 0, 255);
+	SDL_RenderDrawLine(Renderer::Instance().getRenderer(),
+		m_myFloor.x, m_myFloor.y, 
+		m_myFloor.z, m_myFloor.w);
+
 
 	// ----------------------------
 	SDL_SetRenderDrawColor(Renderer::Instance().getRenderer(), 255, 255, 255, 255);
@@ -42,18 +47,32 @@ void PlayScene::update()
 {
 	updateDisplayList();
 
-
-	m_pParticle->setTouchGround(isGround());
-	if (isGround())
-	{
-		/*while (isGround())
-		{
-			m_pParticle->getTransform()->position.y -= 1;
-		}*/
-		
-		std::cout << "collissionnnnn!!!!!!!" << std::endl;
-	}
+	// update partible var
+	m_pParticle->setAngle(m_rampAng);
+	m_pParticle->setGrav(Gravity);
+	m_pParticle->setAccelRamp(Gravity * sin(m_rampAng * DEG_TO_RADIANS));
+	m_pParticle->setVelGround(sqrt(Gravity * m_rampRise * 2));
+	m_pParticle->setAccelFloorFric(Gravity * uFric_Floor);
 	
+	// tells the particle if it's in the ramp or ground
+	m_pParticle->setTouchRamp(isRamp());
+	m_pParticle->setTouchGround(isGround());
+
+	// update ramp and ground
+	m_myRamp = {m_rampPos.x, m_rampPos.y,	// Start pos
+		m_rampPos.x + m_rampRun*P30_M1,		   // Final pos in X
+		m_rampPos.y + m_rampRise*P30_M1};	  // Final pos in y
+
+	m_myFloor = { m_rampPos.x, m_myRamp.w, 
+		800.0f - m_rampPos.x,
+		m_rampPos.y + m_rampRise*P30_M1
+	};
+
+	if (!m_pParticle->getStart())
+	{
+		m_pParticle->getTransform()->position = glm::vec2(m_rampPos.x, m_rampPos.y - 70);
+	}
+
 }
 
 void PlayScene::clean()
@@ -84,11 +103,7 @@ void PlayScene::handleEvents()
 	if (EventManager::Instance().isKeyDown(SDL_SCANCODE_R))
 	{
 		// Restart the particule 
-		/*t = 0.0f;
-		m_pParticle->getTransform()->position.x = 150.0f;
-		m_pParticle->getTransform()->position.y = 450.0f;
-
-		startFlag = false;*/
+		
 	}
 	if (EventManager::Instance().isKeyDown(SDL_SCANCODE_S))
 	{
@@ -106,11 +121,9 @@ void PlayScene::start()
 
 	m_pParticle = new Particle();
 	addChild(m_pParticle);
-	m_pParticle->getTransform()->position = glm::vec2(200, 50);
-	m_pParticle->setYi(50);
-	/*xi = m_pParticle->getTransform()->position.x;
-	yi = m_pParticle->getTransform()->position.y;*/
-	 
+	//m_pParticle->getTransform()->position = glm::vec2(m_rampPos.x, m_rampPos.y - 100);
+	m_pParticle->setXi(m_rampPos.x);
+	m_pParticle->setYi(m_rampPos.y - 70);
 
 
 
@@ -133,7 +146,15 @@ void PlayScene::start()
 bool PlayScene::isGround()
 {
 	return CollisionManager::lineRectCheck(
-		{100,400}, {600, 400}, 
+		{m_myFloor.x,m_myFloor.y}, {m_myFloor.z, m_myFloor.w}, 
+		m_pParticle->getTransform()->position, m_pParticle->getWidth(), m_pParticle->getHeight()
+	);
+}
+
+bool PlayScene::isRamp()
+{
+	return CollisionManager::lineRectCheck(
+		{m_myRamp.x,m_myRamp.y}, {m_myRamp.z, m_myRamp.w}, 
 		m_pParticle->getTransform()->position, m_pParticle->getWidth(), m_pParticle->getHeight()
 	);
 }
@@ -148,9 +169,13 @@ void PlayScene::GUI_Function()
 	
 	ImGui::Begin("Assignment 1", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoMove);
 
-	ImGui::SliderFloat("IniPos X", &m_pParticle->getTransform()->position.x, 0.0f, 800.0f, "%.1f,");
-	//ImGui::SliderFloat("IniPos Y", &m_pParticle->getTransform()->position.y, 0.0f, 600.0f, "%.1f,");
+	ImGui::SliderFloat("m_rampPos X", &m_rampPos.x, 0.0f, 800.0f, "%.1f,");
+	ImGui::SliderFloat("m_rampPos Y", &m_rampPos.y, 0.0f, 600.0f, "%.1f,");
+
 	/*
+	ImGui::SliderFloat("IniPos X", &m_pParticle->getTransform()->position.x, 0.0f, 800.0f, "%.1f,");
+	ImGui::SliderFloat("IniPos Y", &m_pParticle->getTransform()->position.y, 0.0f, 600.0f, "%.1f,");
+	
 	ImGui::Separator();
 	ImGui::SliderFloat("Velocity", &v, 0.f, 100.0f, "%.1f,");
 	ImGui::SliderFloat("Launch Angle", &launchAng, 0.0f, 90.0f, "%.1f,");
